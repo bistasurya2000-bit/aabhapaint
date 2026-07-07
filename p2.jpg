@@ -1,0 +1,20 @@
+[
+  {
+    "id": "e1",
+    "name": "Nepal Art Council Autumn Auction 2026",
+    "venue": "Nepal Art Council Gallery, Babar Mahal",
+    "city": "Kathmandu",
+    "date": "2026-10-17",
+    "description": "Annual charity auction featuring contemporary Nepali artists. My painting 'Marigold Seller, Ason' will be on auction — proceeds partly support art education for rural schools.",
+    "paintings": ["p2"]
+  },
+  {
+    "id": "e2",
+    "name": "Colours of the Valley — Group Exhibition",
+    "venue": "Siddhartha Art Gallery",
+    "city": "Kathmandu",
+    "date": "2026-01-22",
+    "description": "A month-long group show of twelve emerging valley artists. Two of my oils were displayed, and 'Boudhanath at Dusk' found its new home here.",
+    "paintings": ["p4"]
+  }
+]

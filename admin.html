@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painting Manager — Aabha Joshi (private)</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Jost", sans-serif; background: #f3ede3; color: #2b2724; padding: 30px 16px 80px; }
+    .wrap { max-width: 900px; margin: 0 auto; }
+    h1 { margin-bottom: 6px; }
+    .hint { background: #fff7e0; border: 1px solid #eddfae; border-radius: 10px; padding: 14px 18px; margin: 18px 0 26px; font-size: 0.95rem; line-height: 1.6; }
+    .hint code { background: #f0e8d5; padding: 1px 6px; border-radius: 4px; }
+    .row { background: #fff; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 14px; box-shadow: 0 3px 12px rgba(0,0,0,0.06); flex-wrap: wrap; }
+    .row .title { font-weight: 600; flex: 1; min-width: 180px; }
+    .row .meta { color: #6b625a; font-size: 0.88rem; }
+    .pill { padding: 3px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .pill.avail { background: #e2f3e7; color: #2e7d46; }
+    .pill.sold { background: #f6e0e0; color: #9a2f2f; }
+    button { font-family: inherit; cursor: pointer; border: none; border-radius: 8px; padding: 8px 16px; font-size: 0.88rem; font-weight: 500; }
+    .b-edit { background: #eee6d8; } .b-sold { background: #2b2724; color: #fff; } .b-del { background: #f6e0e0; color: #9a2f2f; }
+    .b-add { background: #b5542d; color: #fff; padding: 12px 26px; font-size: 1rem; }
+    .b-dl { background: #2e7d46; color: #fff; padding: 12px 26px; font-size: 1rem; }
+    .toolbar { display: flex; gap: 12px; margin: 22px 0; flex-wrap: wrap; }
+    dialog { border: none; border-radius: 14px; padding: 30px; max-width: 520px; width: 92%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    dialog::backdrop { background: rgba(0,0,0,0.5); }
+    .fg { margin-bottom: 13px; }
+    .fg label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #6b625a; margin-bottom: 4px; }
+    .fg input, .fg select, .fg textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #e6ddd0; border-radius: 8px; font-family: inherit; font-size: 0.95rem; }
+    .fg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .check { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; }
+    .check input { width: auto; }
+    #status { margin-top: 10px; font-weight: 500; color: #2e7d46; }
+    .tabs { display:flex; gap:8px; margin: 20px 0; }
+    .tab { background:#fff; border:1.5px solid #e6ddd0; border-radius: 30px; padding: 8px 22px; }
+    .tab.active { background:#b5542d; color:#fff; border-color:#b5542d; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎨 Painting Manager</h1>
+  <p>Private admin tool — manage your paintings without touching code.</p>
+
+  <div class="hint">
+    <strong>How it works (3 steps):</strong><br>
+    1. Add, edit, delete or mark paintings as sold below.<br>
+    2. Click <strong>Download paintings.json</strong> when done.<br>
+    3. On GitHub, open your repo → <code>data</code> folder → <code>paintings.json</code> → click the ✏️ pencil (or "Replace file") → paste/upload the new file → <strong>Commit changes</strong>. The website updates in about a minute.<br><br>
+    📷 <strong>New painting photos:</strong> upload the image file to the <code>images/paintings</code> folder on GitHub (Add file → Upload files), and use the same filename here.
+  </div>
+
+  <div class="toolbar">
+    <button class="b-add" onclick="openForm()">＋ Add New Painting</button>
+    <button class="b-dl" onclick="download()">⬇ Download paintings.json</button>
+    <span id="status"></span>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<dialog id="dlg">
+  <h2 id="dlg-title" style="margin-bottom:16px">Add Painting</h2>
+  <form id="frm" method="dialog">
+    <input type="hidden" id="f-id">
+    <div class="fg"><label>Title *</label><input id="f-title" required></div>
+    <div class="fg-row">
+      <div class="fg"><label>Medium *</label>
+        <select id="f-medium"><option value="oil">Oil</option><option value="acrylic">Acrylic</option><option value="watercolor">Watercolour</option></select></div>
+      <div class="fg"><label>Year</label><input id="f-year" type="number" placeholder="2026"></div>
+    </div>
+    <div class="fg"><label>Size</label><input id="f-size" placeholder="18 × 24 in"></div>
+    <div class="fg-row">
+      <div class="fg"><label>Price (NPR) *</label><input id="f-npr" type="number" required></div>
+      <div class="fg"><label>Price (USD) *</label><input id="f-usd" type="number" required></div>
+    </div>
+    <div class="fg"><label>Image filename</label><input id="f-image" placeholder="my-new-painting.jpg"></div>
+    <div class="fg"><label>Description</label><textarea id="f-desc" rows="3"></textarea></div>
+    <div class="fg"><label>Auction / exhibition name (leave empty if none)</label><input id="f-auction" placeholder="e.g. Nepal Art Council Autumn Auction 2026"></div>
+    <div class="check"><input type="checkbox" id="f-featured"><label style="margin:0;text-transform:none">Show on home page (featured)</label></div>
+    <div class="check"><input type="checkbox" id="f-sold"><label style="margin:0;text-transform:none">Mark as SOLD</label></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="b-add" type="submit" style="flex:1">Save</button>
+      <button class="b-edit" type="button" onclick="dlg.close()">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+let paintings = [];
+const dlg = document.getElementById("dlg");
+const NPR = n => "रू " + Number(n).toLocaleString("en-IN");
+
+fetch("data/paintings.json").then(r => r.json()).then(d => { paintings = d; draw(); })
+  .catch(() => {
+    document.getElementById("list").innerHTML =
+      '<div class="hint">⚠️ Could not load <code>data/paintings.json</code>. If you opened this file by double-clicking it, browsers block local file loading — instead open the admin page on your live site: <strong>aabhajoshi.com.np/admin.html</strong> (or run a local server).</div>';
+  });
+
+function draw() {
+  document.getElementById("list").innerHTML = paintings.map((p, i) => `
+    <div class="row">
+      <div class="title">${p.title}</div>
+      <div class="meta">${p.medium} · ${p.size || "—"} · ${NPR(p.price_npr)} / $${p.price_usd}</div>
+      <span class="pill ${p.sold ? "sold" : "avail"}">${p.sold ? "Sold" : "Available"}</span>
+      <button class="b-edit" onclick="openForm(${i})">Edit</button>
+      <button class="b-sold" onclick="toggleSold(${i})">${p.sold ? "Mark Available" : "Mark Sold"}</button>
+      <button class="b-del" onclick="del(${i})">Delete</button>
+    </div>`).join("") || "<p>No paintings yet — add your first one!</p>";
+}
+
+function openForm(i) {
+  const p = i !== undefined ? paintings[i] : {};
+  document.getElementById("dlg-title").textContent = i !== undefined ? "Edit Painting" : "Add Painting";
+  document.getElementById("f-id").value = i !== undefined ? i : "";
+  document.getElementById("f-title").value = p.title || "";
+  document.getElementById("f-medium").value = p.medium || "oil";
+  document.getElementById("f-year").value = p.year || "";
+  document.getElementById("f-size").value = p.size || "";
+  document.getElementById("f-npr").value = p.price_npr || "";
+  document.getElementById("f-usd").value = p.price_usd || "";
+  document.getElementById("f-image").value = (p.image || "").replace("images/paintings/", "");
+  document.getElementById("f-desc").value = p.description || "";
+  document.getElementById("f-auction").value = p.auction || "";
+  document.getElementById("f-featured").checked = !!p.featured;
+  document.getElementById("f-sold").checked = !!p.sold;
+  dlg.showModal();
+}
+
+document.getElementById("frm").addEventListener("submit", () => {
+  const i = document.getElementById("f-id").value;
+  const img = document.getElementById("f-image").value.trim();
+  const p = {
+    id: i !== "" ? paintings[i].id : "p" + Date.now(),
+    title: document.getElementById("f-title").value.trim(),
+    medium: document.getElementById("f-medium").value,
+    size: document.getElementById("f-size").value.trim(),
+    year: Number(document.getElementById("f-year").value) || undefined,
+    price_npr: Number(document.getElementById("f-npr").value),
+    price_usd: Number(document.getElementById("f-usd").value),
+    sold: document.getElementById("f-sold").checked,
+    featured: document.getElementById("f-featured").checked,
+    image: img ? (img.startsWith("images/") ? img : "images/paintings/" + img) : "",
+    description: document.getElementById("f-desc").value.trim(),
+    auction: document.getElementById("f-auction").value.trim()
+  };
+  if (i !== "") paintings[i] = p; else paintings.unshift(p);
+  draw(); flash("Saved — remember to Download when finished!");
+});
+
+function toggleSold(i) { paintings[i].sold = !paintings[i].sold; draw(); flash("Updated — remember to Download!"); }
+function del(i) {
+  if (confirm(`Delete "${paintings[i].title}" permanently?`)) { paintings.splice(i, 1); draw(); flash("Deleted — remember to Download!"); }
+}
+function flash(msg) {
+  const s = document.getElementById("status");
+  s.textContent = "✓ " + msg;
+  setTimeout(() => s.textContent = "", 5000);
+}
+function download() {
+  const blob = new Blob([JSON.stringify(paintings, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "paintings.json";
+  a.click();
+  flash("Downloaded! Now upload it to the data folder on GitHub.");
+}
+</script>
+</body>
+</html>

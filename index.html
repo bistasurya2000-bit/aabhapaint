@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+  <title>Aabha Joshi — Original Oil, Acrylic &amp; Watercolour Paintings</title>
+  <meta name="description" content="Original paintings by Aabha Joshi — oil, acrylic and watercolour artworks for sale from Kathmandu, Nepal.">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <section class="hero">
+    <p class="eyebrow">Original Art from Nepal</p>
+    <h1>Where colour meets <em>quiet moments</em></h1>
+    <p class="lede">I'm Aabha Joshi — banker by profession, painter at heart. I create original oil, acrylic and watercolour paintings inspired by the light, life and landscapes of Nepal. Every piece is one of a kind, and every piece is for sale.</p>
+    <a href="gallery.html" class="btn">Browse the Gallery</a>
+    <a href="about.html" class="btn ghost">Meet the Artist</a>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Featured Works</p>
+        <h2>Latest from the Studio</h2>
+        <p>A few pieces currently looking for a wall to call home.</p>
+      </div>
+      <div class="grid" id="featured-grid"></div>
+      <p style="text-align:center;margin-top:44px"><a href="gallery.html" class="btn">View All Paintings</a></p>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">From the Blog</p>
+        <h2>Notes on Painting &amp; Life</h2>
+        <p>Tips, tricks and the occasional story from a part-time painter's easel.</p>
+      </div>
+      <div class="post-list" id="post-list"></div>
+    </div>
+  </section>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    renderChrome("home");
+    initFeatured();
+    loadJSON("data/posts.json").then(posts => {
+      posts.sort((a, b) => b.date.localeCompare(a.date));
+      document.getElementById("post-list").innerHTML = posts.slice(0, 3).map(p => `
+        <article class="post-card">
+          <span class="post-cat">${p.category}</span>
+          <h3><a href="post.html?id=${p.id}">${p.title}</a></h3>
+          <div class="post-date">${new Date(p.date).toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"})}</div>
+          <p class="post-excerpt">${p.excerpt}</p>
+          <a class="read-more" href="post.html?id=${p.id}">Read more →</a>
+        </article>`).join("");
+    });
+  </script>
+</body>
+</html>

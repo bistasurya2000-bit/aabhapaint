@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎨</text></svg>">
+  <title>About — Aabha Joshi</title>
+  <meta name="description" content="About Aabha Joshi — banker by profession, painter at heart.">
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <section class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-photo" id="artist-photo">
+          <img src="images/artist.jpg" alt="Aabha Joshi" onerror="this.remove();document.getElementById('artist-photo').textContent='AJ'">
+        </div>
+        <div class="about-text">
+          <p class="eyebrow" style="letter-spacing:4px;text-transform:uppercase;font-size:0.75rem;color:var(--accent)">The Artist</p>
+          <h2>Namaste, I'm Aabha Joshi</h2>
+          <p>By day, I work as a banker — a world of numbers, precision and deadlines. But evenings and weekends belong to my first love: painting. What started as a childhood habit of sketching in the margins of school notebooks has grown into a lifelong practice across oil, acrylic and watercolour.</p>
+          <p>My work is rooted in Nepal — the golden light on lake water, the chaos and colour of old market squares, terraced hills after rain, and the quiet faces of the people I love. I paint what makes me pause.</p>
+          <p>Every painting in the gallery is an original, signed piece. When you buy one, it comes with a story — and I'm always happy to tell it. I also exhibit and auction selected works; see the <a href="exhibitions.html">Exhibitions</a> page for what's coming up.</p>
+          <p>Want a painting? Have a question? Curious about a commission? Reach me any time:</p>
+          <div class="contact-box" id="about-contact"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="js/config.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    renderChrome("about");
+    document.getElementById("about-contact").innerHTML =
+      '<strong>Contact</strong>📧 <a href="mailto:' + SITE_CONFIG.email + '">' + SITE_CONFIG.email + '</a><br>📞 ' + SITE_CONFIG.phone;
+  </script>
+</body>
+</html>
